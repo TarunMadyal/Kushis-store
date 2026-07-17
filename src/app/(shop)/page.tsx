@@ -11,7 +11,13 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="container-x grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
+        {/* soft painterly blossom accent, echoing the brand's floral mood */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-12 hidden h-[440px] w-[440px] bg-contain bg-no-repeat opacity-60 lg:block"
+          style={{ backgroundImage: "url(/samples/blossom-spray.svg)" }}
+        />
+        <div className="container-x relative grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
           <div>
             <p className="font-heading text-sm uppercase tracking-[0.3em] text-brand-accent">
               New Season
@@ -133,7 +139,7 @@ function CategoryTile({
         fill
         className="object-cover transition duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/70 via-brand-ink/15 to-transparent" />
       <div className="relative p-6 text-white">
         <p className="text-sm uppercase tracking-widest opacity-90">{subtitle}</p>
         <h3 className="font-heading text-3xl">{title}</h3>

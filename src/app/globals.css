@@ -9,22 +9,28 @@
    of the restyle happens by editing the values below.
    ───────────────────────────────────────────────────────────── */
 :root {
-  /* Colours — a warm, boutique palette (default, easy to change) */
-  --color-bg: #fbf7f1; /* page background — soft cream */
-  --color-surface: #ffffff; /* cards, header */
-  --color-ink: #2c2320; /* primary text — deep espresso */
-  --color-muted: #8a7d72; /* secondary text */
-  --color-line: #ece2d6; /* borders / dividers */
-  --color-primary: #a23c52; /* buttons / accents — rosewood */
+  /* Colours — soft "blossom" palette inspired by an impasto floral painting:
+     blush & coral pinks, sage-green leaves, warm cream plaster background. */
+  --color-bg: #f5efe7; /* page background — warm cream plaster */
+  --color-surface: #fcf9f4; /* cards, header — soft ivory */
+  --color-ink: #4a3b37; /* primary text — deep cocoa-rose */
+  --color-muted: #9c8a82; /* secondary text — warm taupe */
+  --color-line: #e9dfd2; /* borders / dividers — soft sand */
+  --color-primary: #c0655f; /* buttons / accents — dusty rose */
   --color-primary-ink: #ffffff; /* text on primary */
-  --color-accent: #c98a2b; /* highlights — warm gold */
+  --color-accent: #8fa06a; /* highlights — sage green */
+
+  /* Extra decorative shades (used in gradients / SVG art) */
+  --color-blush: #f3c9c4; /* soft petal pink */
+  --color-sage: #cbd6a6; /* soft leaf green */
+  --color-gold: #d8a45e; /* flower-centre gold */
 
   /* Typography */
   --font-heading: "Cormorant Garamond", Georgia, serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-body: "Mulish", system-ui, sans-serif;
 
   /* Shape */
-  --radius-card: 14px;
+  --radius-card: 18px;
 }
 
 @layer base {

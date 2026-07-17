@@ -1,18 +1,110 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1125" viewBox="0 0 900 1125">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#A7BE9A"/>
-      <stop offset="1" stop-color="#748C66"/>
-    </linearGradient>
+    <radialGradient id="bg" cx="42%" cy="34%" r="80%">
+      <stop offset="0" stop-color="#F7F1E8"/>
+      <stop offset="1" stop-color="#ECE3D5"/>
+    </radialGradient>
   </defs>
-  <rect width="900" height="1125" fill="url(#g)"/>
-  <g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2">
-    <circle cx="450" cy="470" r="150"/>
-    <circle cx="450" cy="470" r="110"/>
-    <path d="M450 320 C 520 400 520 540 450 620 C 380 540 380 400 450 320 Z"/>
-    <path d="M300 470 C 380 400 520 400 600 470 C 520 540 380 540 300 470 Z"/>
+  <rect width="900" height="1125" fill="url(#bg)"/>
+  <g opacity="0.9">
+    <ellipse transform="rotate(35 300 560)" cx="300" cy="560" rx="70" ry="32" fill="#CBD6A6"/>
+    <ellipse transform="rotate(-20 600 470)" cx="600" cy="470" rx="66" ry="30" fill="#C3D09A"/>
+    <ellipse transform="rotate(60 560 640)" cx="560" cy="640" rx="60" ry="28" fill="#CBD6A6"/>
   </g>
-  <text x="450" y="740" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="Georgia, serif" font-size="30" letter-spacing="6">KURTA</text>
-  <text x="450" y="800" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="52">Sage Anarkali</text>
-  <text x="450" y="1060" text-anchor="middle" fill="#ffffff" fill-opacity="0.65" font-family="Georgia, serif" font-size="24" letter-spacing="8">KUSHI'S STORE</text>
+  <path transform="rotate(0 360 470)" d="M360 470
+      C277.5 402.5, 314.625 320, 360 320
+      C405.375 320, 442.5 402.5, 360 470 Z"
+      fill="#E7A39A"/><path transform="rotate(72 360 470)" d="M360 470
+      C277.5 402.5, 314.625 320, 360 320
+      C405.375 320, 442.5 402.5, 360 470 Z"
+      fill="#E7A39A"/><path transform="rotate(144 360 470)" d="M360 470
+      C277.5 402.5, 314.625 320, 360 320
+      C405.375 320, 442.5 402.5, 360 470 Z"
+      fill="#E7A39A"/><path transform="rotate(216 360 470)" d="M360 470
+      C277.5 402.5, 314.625 320, 360 320
+      C405.375 320, 442.5 402.5, 360 470 Z"
+      fill="#E7A39A"/><path transform="rotate(288 360 470)" d="M360 470
+      C277.5 402.5, 314.625 320, 360 320
+      C405.375 320, 442.5 402.5, 360 470 Z"
+      fill="#E7A39A"/><path transform="rotate(6 360 470)" d="M360 470
+      C318.75 410, 335.25 350, 360 347
+      C384.75 350, 401.25 410, 360 470 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(78 360 470)" d="M360 470
+      C318.75 410, 335.25 350, 360 347
+      C384.75 350, 401.25 410, 360 470 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(150 360 470)" d="M360 470
+      C318.75 410, 335.25 350, 360 347
+      C384.75 350, 401.25 410, 360 470 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(222 360 470)" d="M360 470
+      C318.75 410, 335.25 350, 360 347
+      C384.75 350, 401.25 410, 360 470 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(294 360 470)" d="M360 470
+      C318.75 410, 335.25 350, 360 347
+      C384.75 350, 401.25 410, 360 470 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><circle cx="360" cy="470" r="30" fill="#E7B26A"/><line x1="360" y1="470" x2="411" y2="470" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="404.1672955930064" y2="495.5" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="385.5" y2="514.1672955930064" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="360" y2="521" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="334.5" y2="514.1672955930064" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="315.8327044069936" y2="495.5" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="309" y2="470" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="315.8327044069936" y2="444.5" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="334.5" y2="425.8327044069936" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="360" y2="419" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="385.5" y2="425.8327044069936" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="360" y1="470" x2="404.1672955930064" y2="444.5" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><circle cx="360" cy="470" r="13.5" fill="#F0D9A0"/>
+  <path transform="rotate(0 600 640)" d="M600 640
+      C549.4 598.6, 572.17 548, 600 548
+      C627.83 548, 650.6 598.6, 600 640 Z"
+      fill="#E7A39A"/><path transform="rotate(72 600 640)" d="M600 640
+      C549.4 598.6, 572.17 548, 600 548
+      C627.83 548, 650.6 598.6, 600 640 Z"
+      fill="#E7A39A"/><path transform="rotate(144 600 640)" d="M600 640
+      C549.4 598.6, 572.17 548, 600 548
+      C627.83 548, 650.6 598.6, 600 640 Z"
+      fill="#E7A39A"/><path transform="rotate(216 600 640)" d="M600 640
+      C549.4 598.6, 572.17 548, 600 548
+      C627.83 548, 650.6 598.6, 600 640 Z"
+      fill="#E7A39A"/><path transform="rotate(288 600 640)" d="M600 640
+      C549.4 598.6, 572.17 548, 600 548
+      C627.83 548, 650.6 598.6, 600 640 Z"
+      fill="#E7A39A"/><path transform="rotate(6 600 640)" d="M600 640
+      C574.7 603.2, 584.82 566.4, 600 564.56
+      C615.18 566.4, 625.3 603.2, 600 640 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(78 600 640)" d="M600 640
+      C574.7 603.2, 584.82 566.4, 600 564.56
+      C615.18 566.4, 625.3 603.2, 600 640 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(150 600 640)" d="M600 640
+      C574.7 603.2, 584.82 566.4, 600 564.56
+      C615.18 566.4, 625.3 603.2, 600 640 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(222 600 640)" d="M600 640
+      C574.7 603.2, 584.82 566.4, 600 564.56
+      C615.18 566.4, 625.3 603.2, 600 640 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><path transform="rotate(294 600 640)" d="M600 640
+      C574.7 603.2, 584.82 566.4, 600 564.56
+      C615.18 566.4, 625.3 603.2, 600 640 Z"
+      fill="#F6CBC4" fill-opacity="0.55"/><circle cx="600" cy="640" r="18.400000000000002" fill="#E7B26A"/><line x1="600" y1="640" x2="631.28" y2="640" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="627.0892746303772" y2="655.64" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="615.64" y2="667.0892746303772" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="600" y2="671.28" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="584.36" y2="667.0892746303772" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="572.9107253696228" y2="655.64" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="568.72" y2="640" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="572.9107253696228" y2="624.36" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="584.36" y2="612.9107253696228" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="600" y2="608.72" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="615.64" y2="612.9107253696228" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="600" y1="640" x2="627.0892746303772" y2="624.36" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><circle cx="600" cy="640" r="8.28" fill="#F0D9A0"/>
+  <path transform="rotate(0 250 700)" d="M250 700
+      C213.7 670.3, 230.035 634, 250 634
+      C269.96500000000003 634, 286.3 670.3, 250 700 Z"
+      fill="#F6CBC4"/><path transform="rotate(72 250 700)" d="M250 700
+      C213.7 670.3, 230.035 634, 250 634
+      C269.96500000000003 634, 286.3 670.3, 250 700 Z"
+      fill="#F6CBC4"/><path transform="rotate(144 250 700)" d="M250 700
+      C213.7 670.3, 230.035 634, 250 634
+      C269.96500000000003 634, 286.3 670.3, 250 700 Z"
+      fill="#F6CBC4"/><path transform="rotate(216 250 700)" d="M250 700
+      C213.7 670.3, 230.035 634, 250 634
+      C269.96500000000003 634, 286.3 670.3, 250 700 Z"
+      fill="#F6CBC4"/><path transform="rotate(288 250 700)" d="M250 700
+      C213.7 670.3, 230.035 634, 250 634
+      C269.96500000000003 634, 286.3 670.3, 250 700 Z"
+      fill="#F6CBC4"/><path transform="rotate(6 250 700)" d="M250 700
+      C231.85 673.6, 239.11 647.2, 250 645.88
+      C260.89 647.2, 268.15 673.6, 250 700 Z"
+      fill="#FBE3DF" fill-opacity="0.55"/><path transform="rotate(78 250 700)" d="M250 700
+      C231.85 673.6, 239.11 647.2, 250 645.88
+      C260.89 647.2, 268.15 673.6, 250 700 Z"
+      fill="#FBE3DF" fill-opacity="0.55"/><path transform="rotate(150 250 700)" d="M250 700
+      C231.85 673.6, 239.11 647.2, 250 645.88
+      C260.89 647.2, 268.15 673.6, 250 700 Z"
+      fill="#FBE3DF" fill-opacity="0.55"/><path transform="rotate(222 250 700)" d="M250 700
+      C231.85 673.6, 239.11 647.2, 250 645.88
+      C260.89 647.2, 268.15 673.6, 250 700 Z"
+      fill="#FBE3DF" fill-opacity="0.55"/><path transform="rotate(294 250 700)" d="M250 700
+      C231.85 673.6, 239.11 647.2, 250 645.88
+      C260.89 647.2, 268.15 673.6, 250 700 Z"
+      fill="#FBE3DF" fill-opacity="0.55"/><circle cx="250" cy="700" r="13.200000000000001" fill="#E7B26A"/><line x1="250" y1="700" x2="272.44" y2="700" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="269.43361006092283" y2="711.22" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="261.22" y2="719.4336100609228" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="250" y2="722.44" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="238.78" y2="719.4336100609228" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="230.5663899390772" y2="711.22" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="227.56" y2="700" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="230.5663899390772" y2="688.78" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="238.78" y2="680.5663899390772" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="250" y2="677.56" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="261.22" y2="680.5663899390772" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><line x1="250" y1="700" x2="269.4336100609228" y2="688.78" stroke="#E7B26A" stroke-width="2" stroke-opacity="0.7"/><circle cx="250" cy="700" r="5.9399999999999995" fill="#F0D9A0"/>
+  <text x="450" y="900" text-anchor="middle" fill="#8A7365" font-family="Georgia, serif" font-size="30" letter-spacing="7">KURTA</text>
+  <text x="450" y="962" text-anchor="middle" fill="#4A3B37" font-family="Georgia, serif" font-size="54">Sage Anarkali</text>
+  <text x="450" y="1068" text-anchor="middle" fill="#B79C8E" font-family="Georgia, serif" font-size="22" letter-spacing="9">KUSHI'S STORE</text>
 </svg>

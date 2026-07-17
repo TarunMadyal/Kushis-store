@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Mulish } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -10,8 +10,9 @@ const heading = Cormorant_Garamond({
   display: "swap",
 });
 
-const body = Inter({
+const body = Mulish({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-body",
   display: "swap",
 });
