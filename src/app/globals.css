@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   This is the single place to retune the whole look of the store.
+   When the Pinterest board / screenshot design is finalised, most
+   of the restyle happens by editing the values below.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Colours — a warm, boutique palette (default, easy to change) */
+  --color-bg: #fbf7f1; /* page background — soft cream */
+  --color-surface: #ffffff; /* cards, header */
+  --color-ink: #2c2320; /* primary text — deep espresso */
+  --color-muted: #8a7d72; /* secondary text */
+  --color-line: #ece2d6; /* borders / dividers */
+  --color-primary: #a23c52; /* buttons / accents — rosewood */
+  --color-primary-ink: #ffffff; /* text on primary */
+  --color-accent: #c98a2b; /* highlights — warm gold */
+
+  /* Typography */
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Shape */
+  --radius-card: 14px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-container px-5 sm:px-8;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-primary px-6 py-3 text-sm font-medium text-brand-primary-ink transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-brand-line px-6 py-3 text-sm font-medium text-brand-ink transition hover:border-brand-primary hover:text-brand-primary;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border border-brand-line px-4 py-2 text-sm transition hover:border-brand-primary;
+  }
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1125" viewBox="0 0 900 1125">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F08A6E"/>
+      <stop offset="1" stop-color="#D75B45"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1125" fill="url(#g)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2">
+    <circle cx="450" cy="470" r="150"/>
+    <circle cx="450" cy="470" r="110"/>
+    <path d="M450 320 C 520 400 520 540 450 620 C 380 540 380 400 450 320 Z"/>
+    <path d="M300 470 C 380 400 520 400 600 470 C 520 540 380 540 300 470 Z"/>
+  </g>
+  <text x="450" y="740" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="Georgia, serif" font-size="30" letter-spacing="6">SAREE</text>
+  <text x="450" y="800" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="52">Coral Bandhani</text>
+  <text x="450" y="1060" text-anchor="middle" fill="#ffffff" fill-opacity="0.65" font-family="Georgia, serif" font-size="24" letter-spacing="8">KUSHI'S STORE</text>
+</svg>
