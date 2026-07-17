@@ -13,9 +13,9 @@ export const site = {
   currency: "INR",
   currencySymbol: "₹",
   contact: {
-    email: "hello@kushisstore.com",
-    phone: "+91 00000 00000",
-    whatsapp: "+91 00000 00000",
+    email: "Khushirjain2002@gmail.com",
+    phone: "+91 63637 63956",
+    whatsapp: "+91 63637 63956",
     instagram: "https://instagram.com/",
     address: "India",
   },
