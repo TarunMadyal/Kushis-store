@@ -6,7 +6,7 @@ import StudioSetup from "./StudioSetup";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Kushi's Store — Admin",
+  title: "Khushi's Store — Admin",
   robots: { index: false, follow: false },
 };
 

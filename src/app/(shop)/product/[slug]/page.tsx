@@ -95,6 +95,9 @@ export default async function ProductPage({
           </div>
         </section>
       )}
+
+      {/* Spacer so the mobile sticky add-to-cart bar never overlaps content */}
+      <div className="h-24 lg:hidden" aria-hidden />
     </div>
   );
 }

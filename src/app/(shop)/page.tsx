@@ -139,10 +139,12 @@ function CategoryTile({
         fill
         className="object-cover transition duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/70 via-brand-ink/15 to-transparent" />
-      <div className="relative p-6 text-white">
-        <p className="text-sm uppercase tracking-widest opacity-90">{subtitle}</p>
-        <h3 className="font-heading text-3xl">{title}</h3>
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-surface/85 via-brand-surface/20 to-transparent" />
+      <div className="relative p-6 [text-shadow:0_1px_10px_rgba(252,249,244,0.95)]">
+        <p className="text-sm uppercase tracking-widest text-brand-primary">
+          {subtitle}
+        </p>
+        <h3 className="font-heading text-3xl text-brand-ink">{title}</h3>
       </div>
     </Link>
   );

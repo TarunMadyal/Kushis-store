@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/components/cart/CartContext";
@@ -15,9 +15,20 @@ export default function ProductPurchase({ product }: { product: Product }) {
   );
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const sizeRef = useRef<HTMLDivElement>(null);
 
   const needsSize = sizes.length > 1;
   const canBuy = product.inStock && (!needsSize || !!size);
+
+  // On mobile, if a size is required but not chosen, scroll to the picker
+  // instead of doing nothing.
+  function handleStickyAdd() {
+    if (product.inStock && needsSize && !size) {
+      sizeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    handleAdd();
+  }
 
   function buildItem() {
     return {
@@ -58,7 +69,7 @@ export default function ProductPurchase({ product }: { product: Product }) {
       </div>
 
       {sizes.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-6" ref={sizeRef}>
           <p className="text-sm font-medium text-brand-ink">
             Size {needsSize && !size && (
               <span className="text-brand-primary">— please select</span>
@@ -125,6 +136,34 @@ export default function ProductPurchase({ product }: { product: Product }) {
           This piece is currently sold out.
         </p>
       )}
+
+      {/* Sticky add-to-cart bar — mobile only, always within thumb's reach */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-line bg-brand-surface/95 backdrop-blur lg:hidden">
+        <div
+          className="container-x flex items-center gap-3 py-3"
+          style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        >
+          <div className="flex-none leading-tight">
+            <p className="text-[11px] text-brand-muted">
+              {!product.inStock
+                ? "Sold out"
+                : needsSize && !size
+                ? "Select a size"
+                : size
+                ? `Size ${size}`
+                : "In stock"}
+            </p>
+            <p className="text-lg text-brand-ink">{formatPrice(product.price)}</p>
+          </div>
+          <button
+            onClick={handleStickyAdd}
+            disabled={!product.inStock}
+            className="btn-primary flex-1"
+          >
+            {added ? "Added ✓" : "Add to cart"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

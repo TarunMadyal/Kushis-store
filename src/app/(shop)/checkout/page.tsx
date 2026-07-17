@@ -170,14 +170,14 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           required={!optional}
           rows={3}
-          className="mt-1.5 w-full rounded-lg border border-brand-line bg-brand-surface px-4 py-2.5 text-brand-ink outline-none focus:border-brand-primary"
+          className="mt-1.5 w-full rounded-lg border border-brand-line bg-brand-surface px-4 py-2.5 text-base text-brand-ink outline-none focus:border-brand-primary"
         />
       ) : (
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={!optional}
-          className="mt-1.5 w-full rounded-lg border border-brand-line bg-brand-surface px-4 py-2.5 text-brand-ink outline-none focus:border-brand-primary"
+          className="mt-1.5 w-full rounded-lg border border-brand-line bg-brand-surface px-4 py-2.5 text-base text-brand-ink outline-none focus:border-brand-primary"
         />
       )}
     </label>

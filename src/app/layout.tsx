@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Mulish } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -23,6 +23,13 @@ export const metadata: Metadata = {
     template: `%s — ${site.name}`,
   },
   description: site.description,
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Keep pinch-zoom available for accessibility (don't lock it down).
+  themeColor: "#f5efe7",
 };
 
 export default function RootLayout({

@@ -1,4 +1,4 @@
-# Kushi's Store — Setup & Owner's Guide
+# Khushi's Store — Setup & Owner's Guide
 
 This guide is written to be followed step-by-step, no coding required for the
 day-to-day parts. It covers:
@@ -22,12 +22,12 @@ price, and description, and hits **Publish** — it appears on the site right aw
 No code, ever.
 
 The dashboard lives right inside the website at the address **`/studio`**
-(for example `kushisstore.com/studio`).
+(for example `khushisstore.com/studio`).
 
 ### One-time setup (about 10 minutes)
 
 1. Go to **[sanity.io](https://www.sanity.io/)** and create a free account.
-2. Create a **new project** (any name, e.g. "Kushi's Store"). Choose the
+2. Create a **new project** (any name, e.g. "Khushi's Store"). Choose the
    **"Production"** dataset when asked.
 3. On the project's **API / settings** page, copy the **Project ID**
    (a short code like `abc123xy`).
@@ -38,7 +38,7 @@ The dashboard lives right inside the website at the address **`/studio`**
    ```
    (In Vercel — see step 2 — this is **Settings → Environment Variables**.)
 5. Still on sanity.io, open **API → CORS origins** and add your website address
-   (e.g. `https://kushisstore.com`) so the dashboard can save changes.
+   (e.g. `https://khushisstore.com`) so the dashboard can save changes.
 6. Redeploy the site. Now visit `yoursite.com/studio` — the real dashboard loads.
 
 ### The everyday routine (what your friend does)
@@ -89,7 +89,7 @@ Then open <http://localhost:3000>.
 Once the site is on Vercel and you've bought a domain from GoDaddy:
 
 1. In **Vercel → your project → Settings → Domains**, type your domain
-   (e.g. `kushisstore.com`) and click **Add**.
+   (e.g. `khushisstore.com`) and click **Add**.
 2. Vercel shows you the DNS records to set. Usually:
    - An **A record** pointing `@` to Vercel's IP, **and/or**
    - A **CNAME record** pointing `www` to `cname.vercel-dns.com`.

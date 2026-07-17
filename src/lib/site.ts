@@ -5,11 +5,11 @@
 // ─────────────────────────────────────────────────────────────
 
 export const site = {
-  name: "Kushi's Store",
-  shortName: "Kushi's",
+  name: "Khushi's Store",
+  shortName: "Khushi's",
   tagline: "Handpicked kurtas & sarees for the modern woman",
   description:
-    "Kushi's Store — a curated boutique of elegant kurtas and sarees, blending timeless Indian craft with everyday grace.",
+    "Khushi's Store — a curated boutique of elegant kurtas and sarees, blending timeless Indian craft with everyday grace.",
   currency: "INR",
   currencySymbol: "₹",
   contact: {

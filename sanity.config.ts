@@ -14,7 +14,7 @@ import {
 
 export default defineConfig({
   name: "kushis-store",
-  title: "Kushi's Store — Admin",
+  title: "Khushi's Store — Admin",
   basePath: "/studio",
   projectId,
   dataset,

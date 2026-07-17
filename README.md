@@ -1,4 +1,4 @@
-# Kushi's Store
+# Khushi's Store
 
 A boutique e-commerce storefront for women's kurtas and sarees, built with
 Next.js (App Router) and TypeScript. Products are managed through an embedded

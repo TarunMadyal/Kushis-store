@@ -19,7 +19,7 @@ export default function ContactPage() {
         <ContactRow label="Email" value={site.contact.email} href={`mailto:${site.contact.email}`} />
         <ContactRow label="Phone" value={site.contact.phone} href={`tel:${site.contact.phone.replace(/\s/g, "")}`} />
         <ContactRow label="WhatsApp" value={site.contact.whatsapp} href={`https://wa.me/${whatsapp}`} />
-        <ContactRow label="Instagram" value="@kushisstore" href={site.contact.instagram} />
+        <ContactRow label="Instagram" value="@khushisstore" href={site.contact.instagram} />
       </div>
     </div>
   );
