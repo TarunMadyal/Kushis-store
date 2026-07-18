@@ -6,6 +6,8 @@ export const client = sanityConfigured
       projectId,
       dataset,
       apiVersion,
-      useCdn: true,
+      // Read straight from the API (not the CDN) so newly published products
+      // show up without waiting for CDN propagation.
+      useCdn: false,
     })
   : null;

@@ -41,7 +41,7 @@ export async function getAllProducts(): Promise<Product[]> {
   if (sanityConfigured && client) {
     try {
       const data = (await client.fetch(PRODUCT_QUERY, {}, {
-        next: { revalidate: 60 },
+        next: { revalidate: 30 },
       })) as SanityProduct[];
       if (data && data.length > 0) return data.map(mapSanityProduct);
     } catch (err) {
