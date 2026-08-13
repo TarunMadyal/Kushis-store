@@ -15,17 +15,22 @@ export default function AuthActions() {
   useEffect(() => {
     let active = true;
 
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((response) => response.json())
-      .then((data: { user?: CurrentUser | null }) => {
+    async function loadUser() {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        const data = (await response.json()) as { user?: CurrentUser | null };
         if (active) setUser(data.user || null);
-      })
-      .catch(() => {
+      } catch {
         if (active) setUser(null);
-      });
+      }
+    }
+
+    void loadUser();
+    window.addEventListener("auth-changed", loadUser);
 
     return () => {
       active = false;
+      window.removeEventListener("auth-changed", loadUser);
     };
   }, []);
 
