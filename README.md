@@ -13,6 +13,7 @@ Sanity CMS dashboard, with a warm, easily-retunable design system.
 - **Next.js 15** (App Router, server components)
 - **Tailwind CSS** with CSS-variable design tokens (`src/app/globals.css`)
 - **Sanity** embedded Studio at `/studio` for product management
+- Customer signup/login with encrypted Sanity records and HTTP-only sessions
 - Client-side cart (React context + `localStorage`)
 - Checkout via WhatsApp today; **Razorpay** integration point ready for later
 
@@ -26,6 +27,19 @@ npm run dev      # http://localhost:3000
 The storefront renders built-in **sample products** until Sanity is configured,
 so it works out of the box. Set `NEXT_PUBLIC_SANITY_PROJECT_ID` (see
 `.env.example`) to switch to real, CMS-managed products.
+
+Customer signup/login also needs two **server-only** environment variables:
+
+- `SANITY_API_TOKEN` — a Sanity token with permission to read/create customer auth documents.
+- `AUTH_SECRET` — a stable random secret of at least 32 characters. Do not rotate it without migrating existing customer records because it encrypts stored credentials and signs sessions.
+
+For example, generate a strong auth secret with:
+
+```bash
+openssl rand -base64 48
+```
+
+Never prefix either secret with `NEXT_PUBLIC_`.
 
 ```bash
 npm run build    # production build
@@ -43,14 +57,18 @@ src/
       product/[slug]/  # product detail
       cart/            # cart
       checkout/        # checkout (WhatsApp order; Razorpay-ready)
+      login/, signup/  # customer authentication screens
+      account/         # signed-in customer account page
       about/, contact/
+    api/auth/           # signup, login, logout, current-session endpoints
     studio/[[...tool]] # embedded Sanity admin dashboard
-  components/          # Header, Footer, ProductCard, cart, product UI
+  components/          # Header, Footer, ProductCard, auth, cart, product UI
   lib/
+    auth.ts            # password hashing, encryption, signed sessions
     site.ts            # brand config — name, tagline, contact (single source)
     products.ts        # data layer: Sanity when configured, else sample data
     sampleProducts.ts  # built-in preview catalogue
-    sanity/            # client, image builder, env
+    sanity/            # storefront + server-only auth clients, image builder, env
   sanity/schemaTypes/  # product schema (the "Add product" form)
 sanity.config.ts       # Sanity Studio config
 ```
