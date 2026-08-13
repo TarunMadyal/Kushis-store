@@ -48,7 +48,7 @@ export async function supabaseAuthFetch(
   const headers = new Headers(init.headers);
   headers.set("apikey", key);
   headers.set("Content-Type", "application/json");
-  if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
+  headers.set("Authorization", `Bearer ${accessToken || key}`);
 
   return fetch(`${url}/auth/v1${path}`, {
     ...init,
