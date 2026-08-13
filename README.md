@@ -1,21 +1,65 @@
 # Khushi's Store
 
 A boutique e-commerce storefront for women's kurtas and sarees, built with
-Next.js (App Router) and TypeScript. Products are managed through an embedded
-Sanity CMS dashboard, with a warm, easily-retunable design system.
+Next.js (App Router) and TypeScript. Supabase now powers authentication,
+customer data, delivery addresses and the product catalogue.
 
-> **New here / non-technical?** Read **[SETUP.md](./SETUP.md)** — it explains how
-> to add products, go live, connect a domain, and turn on payments in plain
-> language.
+> **New here / non-technical?** Read **[SETUP.md](./SETUP.md)** for the deployment
+> and store-management checklist.
 
 ## Tech
 
-- **Next.js 15** (App Router, server components)
+- **Next.js 15** (App Router)
 - **Tailwind CSS** with CSS-variable design tokens (`src/app/globals.css`)
-- **Sanity** embedded Studio at `/studio` for product management
-- Customer signup/login with encrypted Sanity records and HTTP-only sessions
+- **Supabase Auth** for email/password customer accounts
+- **Supabase Postgres** for customer profiles, delivery addresses and products
+- **Supabase Storage-ready** `product-images` bucket for product photography
+- Row Level Security so customers can only access their own profile/address rows
 - Client-side cart (React context + `localStorage`)
 - Checkout via WhatsApp today; **Razorpay** integration point ready for later
+
+## Customer experience
+
+Signup intentionally stays lightweight:
+
+1. Name
+2. Email
+3. Password
+
+Phone and address are **not** requested during signup or login. Customers can
+save them later in **My Account**, or enter them only when checkout actually
+needs delivery details. Signed-in customers get saved details pre-filled at
+checkout and can choose whether to save changes for next time.
+
+## Supabase setup
+
+The application expects:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+```
+
+Use a modern `sb_publishable_...` key. There is no service-role/secret key in
+the storefront and no custom password storage.
+
+Apply the SQL in:
+
+```text
+supabase/migrations/001_customer_platform.sql
+```
+
+That migration creates:
+
+- `profiles` — optional customer name/phone data
+- `addresses` — customer-owned delivery addresses
+- `products` — the public catalogue
+- RLS policies and Data API grants
+- a public `product-images` Storage bucket
+- starter catalogue rows matching the current sample products
+
+Products are publicly readable, while profile/address rows are restricted to
+the authenticated owner with Row Level Security.
 
 ## Getting started
 
@@ -24,56 +68,54 @@ npm install
 npm run dev      # http://localhost:3000
 ```
 
-The storefront renders built-in **sample products** until Sanity is configured,
-so it works out of the box. Set `NEXT_PUBLIC_SANITY_PROJECT_ID` (see
-`.env.example`) to switch to real, CMS-managed products.
-
-Customer signup/login also needs two **server-only** environment variables:
-
-- `SANITY_API_TOKEN` — a Sanity token with permission to read/create customer auth documents.
-- `AUTH_SECRET` — a stable random secret of at least 32 characters. Do not rotate it without migrating existing customer records because it encrypts stored credentials and signs sessions.
-
-For example, generate a strong auth secret with:
+The storefront still renders the built-in sample catalogue if Supabase is not
+configured or temporarily unavailable.
 
 ```bash
-openssl rand -base64 48
-```
-
-Never prefix either secret with `NEXT_PUBLIC_`.
-
-```bash
-npm run build    # production build
-npm start        # serve the production build
+npm run build
+npm start
 ```
 
 ## Project layout
 
-```
+```text
 src/
   app/
-    (shop)/            # storefront (header + footer + cart chrome)
-      page.tsx         # home
-      shop/            # product listing + category filter
-      product/[slug]/  # product detail
-      cart/            # cart
-      checkout/        # checkout (WhatsApp order; Razorpay-ready)
-      login/, signup/  # customer authentication screens
-      account/         # signed-in customer account page
-      about/, contact/
-    api/auth/           # signup, login, logout, current-session endpoints
-    studio/[[...tool]] # embedded Sanity admin dashboard
-  components/          # Header, Footer, ProductCard, auth, cart, product UI
+    (shop)/
+      page.tsx
+      shop/
+      product/[slug]/
+      cart/
+      checkout/        # asks for delivery data only when needed
+      login/, signup/
+      account/         # optional contact + saved address management
+    api/
+      auth/            # Supabase signup/login/logout/current user
+      profile/         # authenticated profile read/update
+      address/         # authenticated default address read/update
+  components/
+    auth/
+      AuthForm.tsx
+      AuthActions.tsx
+      AccountProfile.tsx
   lib/
-    auth.ts            # password hashing, encryption, signed sessions
-    site.ts            # brand config — name, tagline, contact (single source)
-    products.ts        # data layer: Sanity when configured, else sample data
-    sampleProducts.ts  # built-in preview catalogue
-    sanity/            # storefront + server-only auth clients, image builder, env
-  sanity/schemaTypes/  # product schema (the "Add product" form)
-sanity.config.ts       # Sanity Studio config
+    supabase.ts        # Supabase Auth/Data REST integration + secure cookies
+    products.ts        # Supabase catalogue with sample fallback
+    sampleProducts.ts
+    site.ts
+supabase/
+  migrations/
+    001_customer_platform.sql
 ```
+
+## Product management
+
+For now, products can be managed from the Supabase Dashboard using the
+`products` table and `product-images` Storage bucket. Product `images` is an
+array of image URLs. This replaces the previous Sanity-backed runtime data
+flow.
 
 ## Customising the look
 
-- Brand text / contact: `src/lib/site.ts`
-- Colours, fonts, radius: the `:root` token block in `src/app/globals.css`
+- Brand text/contact: `src/lib/site.ts`
+- Colours/fonts/radius: the `:root` token block in `src/app/globals.css`
