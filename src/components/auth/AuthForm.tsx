@@ -8,6 +8,8 @@ type AuthFormProps = {
   mode: "login" | "signup";
 };
 
+type SignupStage = "form" | "validating" | "success";
+
 export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const isSignup = mode === "signup";
@@ -16,13 +18,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [signupStage, setSignupStage] = useState<SignupStage>("form");
+  const [requiresEmailConfirmation, setRequiresEmailConfirmation] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setSuccess("");
 
     if (isSignup && password !== confirmPassword) {
       setError("Passwords do not match.");
@@ -30,6 +32,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
 
     setSubmitting(true);
+    const validationStartedAt = Date.now();
+    if (isSignup) setSignupStage("validating");
 
     try {
       const response = await fetch(`/api/auth/${mode}`, {
@@ -47,16 +51,23 @@ export default function AuthForm({ mode }: AuthFormProps) {
       };
 
       if (!response.ok) {
+        if (isSignup) setSignupStage("form");
         setError(data.error || "Something went wrong. Please try again.");
         return;
       }
 
-      if (isSignup && data.requiresEmailConfirmation) {
-        setSuccess(
-          "Account created. Please check your email and confirm your address, then sign in.",
-        );
+      if (isSignup) {
+        // Keep the real validation state visible long enough to feel intentional,
+        // even when the network request returns almost instantly.
+        const elapsed = Date.now() - validationStartedAt;
+        if (elapsed < 900) {
+          await new Promise((resolve) => setTimeout(resolve, 900 - elapsed));
+        }
+
+        setRequiresEmailConfirmation(Boolean(data.requiresEmailConfirmation));
         setPassword("");
         setConfirmPassword("");
+        setSignupStage("success");
         return;
       }
 
@@ -64,10 +75,75 @@ export default function AuthForm({ mode }: AuthFormProps) {
       router.push("/account");
       router.refresh();
     } catch {
+      if (isSignup) setSignupStage("form");
       setError("Unable to connect. Please check your connection and try again.");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (isSignup && signupStage === "validating") {
+    return (
+      <section className="container-x py-14 sm:py-20">
+        <div className="mx-auto flex min-h-[430px] max-w-md flex-col items-center justify-center rounded-[var(--radius-card)] border border-brand-line bg-brand-surface p-8 text-center shadow-sm sm:p-10">
+          <div className="auth-validating-ring" aria-hidden="true" />
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-brand-primary">
+            Almost there
+          </p>
+          <h1 className="mt-3 font-heading text-4xl text-brand-ink">Creating your account</h1>
+          <p className="mt-4 max-w-sm text-base leading-7 text-brand-muted">
+            We&apos;re securely validating your details and preparing your Khushi&apos;s Store account.
+          </p>
+          <div className="mt-8 flex items-center gap-2 text-sm text-brand-muted">
+            <span className="auth-validating-dot" />
+            <span className="auth-validating-dot auth-validating-dot-delay-1" />
+            <span className="auth-validating-dot auth-validating-dot-delay-2" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isSignup && signupStage === "success") {
+    return (
+      <section className="container-x py-14 sm:py-20">
+        <div className="auth-success-card mx-auto max-w-md overflow-hidden rounded-[var(--radius-card)] border border-brand-line bg-brand-surface p-8 text-center shadow-sm sm:p-10">
+          <div className="auth-success-icon mx-auto" aria-hidden="true">
+            <svg viewBox="0 0 64 64" className="h-full w-full">
+              <circle className="auth-success-circle" cx="32" cy="32" r="29" fill="none" strokeWidth="3" />
+              <path className="auth-success-check" d="M18 33.5 27.5 43 47 22.5" fill="none" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          <div className="auth-success-copy">
+            <p className="mt-7 text-xs font-semibold uppercase tracking-[0.22em] text-brand-primary">
+              Account verified
+            </p>
+            <h1 className="mt-3 font-heading text-4xl sm:text-5xl text-brand-ink">
+              Account created successfully!
+            </h1>
+            <p className="mx-auto mt-5 max-w-sm text-base leading-7 text-brand-muted">
+              {requiresEmailConfirmation
+                ? "Your account is ready. Please confirm the email we sent you, then sign in using the email and password you just created."
+                : "Your account is ready. Sign in now using the email and password you just created."}
+            </p>
+
+            <div className="mt-5 rounded-2xl border border-brand-line bg-brand-bg px-4 py-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-brand-muted">Your sign-in email</p>
+              <p className="mt-1 break-all text-base font-semibold text-brand-ink">{email}</p>
+            </div>
+
+            <Link href="/login" className="btn-primary mt-7 w-full text-base">
+              Sign in now
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/" className="mt-5 inline-block text-sm font-medium text-brand-muted transition hover:text-brand-primary">
+              Continue browsing instead
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -156,16 +232,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
               {error}
             </p>
           )}
-          {success && (
-            <p role="status" className="rounded-xl border border-brand-line bg-brand-bg px-4 py-3 text-sm text-brand-ink">
-              {success}
-            </p>
-          )}
 
           <button type="submit" disabled={submitting} className="btn-primary w-full">
             {submitting
               ? isSignup
-                ? "Creating account..."
+                ? "Validating account..."
                 : "Signing in..."
               : isSignup
                 ? "Create account"
