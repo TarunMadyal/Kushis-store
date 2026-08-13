@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import {
-  applyAuthCookies,
   publicUser,
   resolveSession,
+  setSessionCookies,
   supabaseDataFetch,
 } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
 function withRefreshedSession(response: NextResponse, refreshedSession: any) {
-  if (refreshedSession) applyAuthCookies(response, refreshedSession);
+  if (refreshedSession) setSessionCookies(response, refreshedSession);
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
