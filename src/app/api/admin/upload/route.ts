@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const response = await supabaseStorageFetch(`/object/product-images/${encodedPath}`, {
       method: "POST",
       headers: { "Content-Type": file.type, "x-upsert": "false" },
-      body: Buffer.from(await file.arrayBuffer()),
+      body: await file.arrayBuffer(),
     }, session.accessToken);
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
