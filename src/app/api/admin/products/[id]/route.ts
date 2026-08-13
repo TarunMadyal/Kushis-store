@@ -23,7 +23,9 @@ export async function PATCH(request: Request, { params }: Context) {
   if (!session) return NextResponse.json({ error: "Owner access required." }, { status: 403 });
   const { id } = await params;
   const parsed = parseProductPayload(await request.json().catch(() => null), true);
-  if (parsed.error) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  if (parsed.error || !parsed.data) {
+    return NextResponse.json({ error: parsed.error || "Invalid product data." }, { status: 400 });
+  }
   if (!Object.keys(parsed.data).length) return NextResponse.json({ error: "No changes supplied." }, { status: 400 });
 
   const response = await supabaseDataFetch(`/products?id=eq.${encodeURIComponent(id)}`, {
