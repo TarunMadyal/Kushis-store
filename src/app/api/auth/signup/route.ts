@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { publicUser, setSessionCookies, supabaseAuthFetch } from "@/lib/supabase";
+import { publicUser, supabaseAuthFetch } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
@@ -75,7 +75,9 @@ export async function POST(request: Request) {
       { status: 201 },
     );
 
-    if (!requiresEmailConfirmation) setSessionCookies(response, data);
+    // Signup intentionally does not create a storefront session. The customer
+    // sees a clear success state and then explicitly signs in with the email
+    // and password they just created.
     response.headers.set("Cache-Control", "private, no-store");
     return response;
   } catch (error) {
