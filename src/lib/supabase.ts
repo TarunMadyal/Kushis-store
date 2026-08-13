@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+const DEFAULT_URL = "https://eensreaqkqgwojweornq.supabase.co";
+const DEFAULT_PUBLISHABLE_KEY = "sb_publishable_VRWSihC9ALnbnHJ_E_0vyQ_mlqtNjo6";
+
 const ACCESS_COOKIE = "kushis_sb_access";
 const REFRESH_COOKIE = "kushis_sb_refresh";
 const ACCESS_MAX_AGE = 60 * 60;
@@ -26,23 +29,14 @@ type AuthSession = {
 };
 
 function getConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "");
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!url || !key) {
-    throw new Error(
-      "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
-    );
-  }
-
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_URL).replace(/\/$/, "");
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || DEFAULT_PUBLISHABLE_KEY;
   return { url, key };
 }
 
 export function isSupabaseConfigured() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-  );
+  return true;
 }
 
 export async function supabaseAuthFetch(
@@ -83,9 +77,10 @@ export async function supabaseDataFetch(
 
 export function publicUser(user: SupabaseAuthUser): PublicUser {
   const rawName = user.user_metadata?.full_name;
-  const name = typeof rawName === "string" && rawName.trim()
-    ? rawName.trim()
-    : user.email?.split("@")[0] || "Customer";
+  const name =
+    typeof rawName === "string" && rawName.trim()
+      ? rawName.trim()
+      : user.email?.split("@")[0] || "Customer";
 
   return {
     id: user.id,
@@ -112,11 +107,23 @@ export function setSessionCookies(response: NextResponse, session: AuthSession) 
 }
 
 export function clearSessionCookies(response: NextResponse) {
-  response.cookies.set(ACCESS_COOKIE, "", { path: "/", maxAge: 0 });
-  response.cookies.set(REFRESH_COOKIE, "", { path: "/", maxAge: 0 });
+  response.cookies.set(ACCESS_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+  response.cookies.set(REFRESH_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }
 
-async function userFromAccessToken(accessToken: string) {
+export async function userFromAccessToken(accessToken: string) {
   const response = await supabaseAuthFetch("/user", { method: "GET" }, accessToken);
   if (!response.ok) return null;
   return (await response.json()) as SupabaseAuthUser;
@@ -139,7 +146,9 @@ export async function resolveSession() {
 
   if (accessToken) {
     const user = await userFromAccessToken(accessToken);
-    if (user) return { user, accessToken, refreshedSession: null as AuthSession | null };
+    if (user) {
+      return { user, accessToken, refreshedSession: null as AuthSession | null };
+    }
   }
 
   if (!refreshToken) return null;
@@ -148,7 +157,8 @@ export async function resolveSession() {
   if (!refreshedSession?.access_token) return null;
 
   const user =
-    refreshedSession.user || (await userFromAccessToken(refreshedSession.access_token));
+    refreshedSession.user ||
+    (await userFromAccessToken(refreshedSession.access_token));
   if (!user) return null;
 
   return {
