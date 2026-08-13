@@ -48,6 +48,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         return;
       }
 
+      window.dispatchEvent(new Event("auth-changed"));
       router.push("/account");
       router.refresh();
     } catch {
