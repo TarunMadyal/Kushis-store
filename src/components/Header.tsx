@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { site } from "@/lib/site";
+import AuthActions from "./auth/AuthActions";
 import { useCart } from "./cart/CartContext";
 
 const nav = [
@@ -58,18 +59,21 @@ export default function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/cart"
-          className="relative flex items-center gap-2 text-brand-ink"
-          aria-label="Cart"
-        >
-          <BagIcon />
-          {count > 0 && (
-            <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-primary px-1 text-[11px] font-semibold text-brand-primary-ink">
-              {count}
-            </span>
-          )}
-        </Link>
+        <div className="flex items-center gap-4 sm:gap-5">
+          <AuthActions />
+          <Link
+            href="/cart"
+            className="relative flex items-center gap-2 text-brand-ink"
+            aria-label="Cart"
+          >
+            <BagIcon />
+            {count > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-primary px-1 text-[11px] font-semibold text-brand-primary-ink">
+                {count}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
 
       {open && (
