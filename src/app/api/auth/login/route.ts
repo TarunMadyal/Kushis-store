@@ -1,17 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  createSessionToken,
-  decryptStoredUser,
-  normalizeEmail,
-  SESSION_COOKIE,
-  SESSION_TTL_SECONDS,
-  userDocumentId,
-  verifyPassword,
-} from "@/lib/auth";
-import {
-  CustomerAuthDocument,
-  getAuthSanityClient,
-} from "@/lib/sanity/authClient";
+import { publicUser, setSessionCookies, supabaseAuthFetch } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
@@ -23,7 +11,7 @@ export async function POST(request: Request) {
     } | null;
 
     const email =
-      typeof body?.email === "string" ? normalizeEmail(body.email) : "";
+      typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
     const password = typeof body?.password === "string" ? body.password : "";
 
     if (!email || !password) {
@@ -33,41 +21,22 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = getAuthSanityClient();
-    const id = userDocumentId(email);
-    const document = await client.getDocument<CustomerAuthDocument>(id);
-    const storedUser = document ? decryptStoredUser(document.payload) : null;
-
-    if (!storedUser || normalizeEmail(storedUser.email) !== email) {
-      return NextResponse.json(
-        { error: "Invalid email or password." },
-        { status: 401 },
-      );
-    }
-
-    const passwordMatches = await verifyPassword(
-      password,
-      storedUser.passwordSalt,
-      storedUser.passwordHash,
-    );
-
-    if (!passwordMatches) {
-      return NextResponse.json(
-        { error: "Invalid email or password." },
-        { status: 401 },
-      );
-    }
-
-    const user = { id, name: storedUser.name, email: storedUser.email };
-    const response = NextResponse.json({ user });
-    response.cookies.set(SESSION_COOKIE, createSessionToken(user), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: SESSION_TTL_SECONDS,
+    const authResponse = await supabaseAuthFetch("/token?grant_type=password", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
     });
+    const data = await authResponse.json().catch(() => ({}));
 
+    if (!authResponse.ok) {
+      return NextResponse.json(
+        { error: "Invalid email or password." },
+        { status: authResponse.status === 400 ? 401 : authResponse.status },
+      );
+    }
+
+    const response = NextResponse.json({ user: publicUser(data.user) });
+    setSessionCookies(response, data);
+    response.headers.set("Cache-Control", "private, no-store");
     return response;
   } catch (error) {
     console.error("Login failed", error);

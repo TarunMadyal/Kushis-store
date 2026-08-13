@@ -16,11 +16,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSuccess("");
 
     if (isSignup && password !== confirmPassword) {
       setError("Passwords do not match.");
@@ -41,10 +43,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
       });
       const data = (await response.json().catch(() => ({}))) as {
         error?: string;
+        requiresEmailConfirmation?: boolean;
       };
 
       if (!response.ok) {
         setError(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+
+      if (isSignup && data.requiresEmailConfirmation) {
+        setSuccess(
+          "Account created. Please check your email and confirm your address, then sign in.",
+        );
+        setPassword("");
+        setConfirmPassword("");
         return;
       }
 
@@ -70,7 +82,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           </h1>
           <p className="mt-3 text-sm leading-6 text-brand-muted">
             {isSignup
-              ? "Save your details and enjoy a smoother shopping experience."
+              ? "Just your name, email and password. Delivery details can wait until you actually need them."
               : "Sign in to access your Khushi's Store account."}
           </p>
         </div>
@@ -78,9 +90,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         <form className="space-y-5" onSubmit={handleSubmit}>
           {isSignup && (
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-brand-ink">
-                Full name
-              </span>
+              <span className="mb-2 block text-sm font-medium text-brand-ink">Full name</span>
               <input
                 type="text"
                 autoComplete="name"
@@ -96,9 +106,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           )}
 
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-brand-ink">
-              Email address
-            </span>
+            <span className="mb-2 block text-sm font-medium text-brand-ink">Email address</span>
             <input
               type="email"
               autoComplete="email"
@@ -112,9 +120,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-brand-ink">
-              Password
-            </span>
+            <span className="mb-2 block text-sm font-medium text-brand-ink">Password</span>
             <input
               type="password"
               autoComplete={isSignup ? "new-password" : "current-password"}
@@ -130,9 +136,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
           {isSignup && (
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-brand-ink">
-                Confirm password
-              </span>
+              <span className="mb-2 block text-sm font-medium text-brand-ink">Confirm password</span>
               <input
                 type="password"
                 autoComplete="new-password"
@@ -148,19 +152,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
           )}
 
           {error && (
-            <p
-              role="alert"
-              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
+            <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
             </p>
           )}
+          {success && (
+            <p role="status" className="rounded-xl border border-brand-line bg-brand-bg px-4 py-3 text-sm text-brand-ink">
+              {success}
+            </p>
+          )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="btn-primary w-full"
-          >
+          <button type="submit" disabled={submitting} className="btn-primary w-full">
             {submitting
               ? isSignup
                 ? "Creating account..."
@@ -173,10 +175,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         <p className="mt-7 text-center text-sm text-brand-muted">
           {isSignup ? "Already have an account?" : "New to Khushi's Store?"}{" "}
-          <Link
-            href={isSignup ? "/login" : "/signup"}
-            className="font-semibold text-brand-primary hover:underline"
-          >
+          <Link href={isSignup ? "/login" : "/signup"} className="font-semibold text-brand-primary hover:underline">
             {isSignup ? "Sign in" : "Create an account"}
           </Link>
         </p>

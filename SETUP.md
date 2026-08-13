@@ -1,139 +1,111 @@
 # Khushi's Store — Setup & Owner's Guide
 
-This guide is written to be followed step-by-step, no coding required for the
-day-to-day parts. It covers:
+This store now uses **Supabase** instead of Sanity for customer accounts, saved delivery details, and the product catalogue.
 
-1. [How adding products works (photos, names, prices, descriptions)](#1-adding-products)
-2. [Getting the shop live on the internet](#2-going-live-deploying)
-3. [Connecting your GoDaddy domain](#3-connecting-your-godaddy-domain)
-4. [Turning on Razorpay payments](#4-turning-on-razorpay-payments)
-5. [Changing the shop name, colours, and look](#5-changing-the-name-colours--look)
+## 1. Supabase setup
 
-Until you finish step 1, the shop shows a few **sample products** automatically
-so you can preview the design. They disappear the moment real products are added.
+Create a Supabase project and add these environment variables in Vercel:
 
----
+```text
+NEXT_PUBLIC_SUPABASE_URL=<project URL>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<sb_publishable_... key>
+```
 
-## 1. Adding products
+Apply the database setup in:
 
-Products are managed through a free, friendly dashboard called **Sanity**. Your
-friend logs in, clicks **"Add product,"** drags in photos, types the name,
-price, and description, and hits **Publish** — it appears on the site right away.
-No code, ever.
+```text
+supabase/migrations/001_customer_platform.sql
+```
 
-The dashboard lives right inside the website at the address **`/studio`**
-(for example `khushisstore.com/studio`).
+It creates:
 
-### One-time setup (about 10 minutes)
+- `profiles` for optional customer contact details
+- `addresses` for saved delivery addresses
+- `products` for the shop catalogue
+- secure Row Level Security policies
+- a public `product-images` Storage bucket
+- starter products matching the current sample catalogue
 
-1. Go to **[sanity.io](https://www.sanity.io/)** and create a free account.
-2. Create a **new project** (any name, e.g. "Khushi's Store"). Choose the
-   **"Production"** dataset when asked.
-3. On the project's **API / settings** page, copy the **Project ID**
-   (a short code like `abc123xy`).
-4. Add it to the website's settings as an environment variable:
-   ```
-   NEXT_PUBLIC_SANITY_PROJECT_ID=abc123xy
-   NEXT_PUBLIC_SANITY_DATASET=production
-   ```
-   (In Vercel — see step 2 — this is **Settings → Environment Variables**.)
-5. Still on sanity.io, open **API → CORS origins** and add your website address
-   (e.g. `https://khushisstore.com`) so the dashboard can save changes.
-6. Redeploy the site. Now visit `yoursite.com/studio` — the real dashboard loads.
+No service-role key or custom password secret is required by the storefront.
 
-### The everyday routine (what your friend does)
+## 2. Customer accounts
 
-1. Go to `yoursite.com/studio` and log in.
-2. Click **Product → Create new**.
-3. Fill in the form:
-   - **Product name** (e.g. "Marigold Cotton Kurta")
-   - **Web address** — click *Generate* (it fills itself from the name)
-   - **Category** — Kurta, Saree, or Other
-   - **Photos** — drag and drop one or more images
-   - **Price (₹)** — and optionally an **Original price** to show a discount
-   - **Short description**, **Details** (bullet points), **Fabric**,
-     **Colour**, **Sizes**
-   - **In stock?** and **Feature on homepage?** toggles
-4. Click **Publish**. Done — it's on the site.
+Signup asks only for:
 
-To edit or remove a product later, open it in the dashboard, change it, and
-Publish again (or use the menu to delete).
+- Full name
+- Email
+- Password
 
----
+Phone number and address are deliberately **not** requested at signup or login.
+Customers can save them later under **My Account**, or simply enter them when
+checkout actually needs delivery information.
 
-## 2. Going live (deploying)
+When a signed-in customer checks out, any saved contact/address data is filled in
+automatically. They can edit it for that order and choose whether to save the
+updated details for next time.
 
-The easiest and free way to host this site is **[Vercel](https://vercel.com/)**
-(made by the same team as the framework this site uses).
+## 3. Managing products
 
-1. Push this project to a GitHub repository (already done if you're reading this
-   in GitHub).
-2. Sign in to Vercel with GitHub and click **"Add New → Project."**
-3. Pick this repository and click **Deploy**. That's it — you get a live URL like
-   `kushis-store.vercel.app`.
-4. Add the environment variables from step 1 (and step 4) under
-   **Settings → Environment Variables**, then redeploy.
+Open the Supabase Dashboard and use the **Table Editor → products** table.
+Each product supports:
 
-### To run it on your own computer (optional, for previewing)
+- `title`
+- `slug`
+- `category` (`kurta`, `saree`, `other`)
+- `price`
+- `compare_at_price`
+- `description`
+- `details` (text array)
+- `fabric`
+- `color`
+- `sizes` (text array)
+- `images` (text array of image URLs)
+- `in_stock`
+- `featured`
+
+For product photos, upload files to **Storage → product-images** and place the
+public image URLs in the product's `images` array.
+
+The storefront falls back to built-in sample products if Supabase is unavailable,
+so the site never becomes empty during setup.
+
+## 4. Going live on Vercel
+
+1. Connect the GitHub repository to Vercel.
+2. Add the two Supabase variables under **Settings → Environment Variables**.
+3. Enable them for **Production**, **Preview**, and **Development** as needed.
+4. Redeploy after changing environment variables.
+5. Test `/signup`, `/login`, `/account`, `/shop`, and `/checkout`.
+
+To run locally:
 
 ```bash
 npm install
 npm run dev
 ```
-Then open <http://localhost:3000>.
 
----
+Then open `http://localhost:3000`.
 
-## 3. Connecting your GoDaddy domain
+## 5. Domain setup
 
-Once the site is on Vercel and you've bought a domain from GoDaddy:
+In **Vercel → Settings → Domains**, add the domain. Then copy the DNS records
+Vercel provides into GoDaddy's DNS manager. Vercel will provision HTTPS
+automatically after the records resolve.
 
-1. In **Vercel → your project → Settings → Domains**, type your domain
-   (e.g. `khushisstore.com`) and click **Add**.
-2. Vercel shows you the DNS records to set. Usually:
-   - An **A record** pointing `@` to Vercel's IP, **and/or**
-   - A **CNAME record** pointing `www` to `cname.vercel-dns.com`.
-3. Log in to **GoDaddy → your domain → DNS → Manage DNS**, and add/replace those
-   records exactly as Vercel shows them.
-4. Wait a little while (usually minutes, up to a few hours) for it to connect.
-   Vercel will show a green checkmark when it's live, with HTTPS set up
-   automatically.
+## 6. Razorpay payments
 
----
+Checkout currently sends the confirmed order through WhatsApp. When Razorpay is
+ready, add:
 
-## 4. Turning on Razorpay payments
+```text
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+NEXT_PUBLIC_RAZORPAY_KEY_ID=
+```
 
-The checkout works today by sending the order over **WhatsApp** — a simple,
-reliable way to start taking orders immediately. When you're ready to accept
-online card/UPI payments:
+The existing checkout page already contains the online-payment integration point.
 
-1. Create an account at **[razorpay.com](https://razorpay.com/)** and complete
-   their KYC/business verification.
-2. From **Razorpay Dashboard → Settings → API Keys**, generate keys and copy the
-   **Key ID** and **Key Secret**.
-3. Add them to the website's environment variables:
-   ```
-   RAZORPAY_KEY_ID=rzp_live_xxxxx
-   RAZORPAY_KEY_SECRET=xxxxxxxx
-   NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_live_xxxxx
-   ```
-4. Tell me (or your developer) to switch on the payment button — the checkout
-   page already has the integration point marked and ready. This final wiring
-   (creating the order + verifying the payment) is a short, well-defined task.
+## 7. Changing the brand/design
 
----
-
-## 5. Changing the name, colours & look
-
-Everything is built so the look can be retuned quickly — perfect for matching a
-specific design (like a Pinterest board or a screenshot).
-
-- **Shop name, tagline, contact details, Instagram, shipping banner:**
-  edit **`src/lib/site.ts`**. Change them once and they update across the whole
-  site (header, footer, page titles, etc.).
-- **Colours, fonts, corner roundness:** edit the design tokens at the top of
-  **`src/app/globals.css`** (the `:root { ... }` block). For example, change
-  `--color-primary` to switch the button/accent colour everywhere.
-
-When you send the final design reference, most of the restyle happens by editing
-just those two files.
+- Shop name, tagline, contact details and shipping banner: `src/lib/site.ts`
+- Colours, fonts and shape tokens: `src/app/globals.css`

@@ -1,30 +1,9 @@
 import { NextResponse } from "next/server";
-import {
-  createSessionToken,
-  encryptStoredUser,
-  hashPassword,
-  normalizeEmail,
-  SESSION_COOKIE,
-  SESSION_TTL_SECONDS,
-  userDocumentId,
-} from "@/lib/auth";
-import {
-  CustomerAuthDocument,
-  getAuthSanityClient,
-} from "@/lib/sanity/authClient";
+import { publicUser, setSessionCookies, supabaseAuthFetch } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function isConflictError(error: unknown) {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "statusCode" in error &&
-    (error as { statusCode?: number }).statusCode === 409
-  );
-}
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +15,7 @@ export async function POST(request: Request) {
 
     const name = typeof body?.name === "string" ? body.name.trim() : "";
     const email =
-      typeof body?.email === "string" ? normalizeEmail(body.email) : "";
+      typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
     const password = typeof body?.password === "string" ? body.password : "";
 
     if (name.length < 2 || name.length > 80) {
@@ -60,52 +39,44 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = getAuthSanityClient();
-    const id = userDocumentId(email);
-    const existing = await client.getDocument<CustomerAuthDocument>(id);
+    const authResponse = await supabaseAuthFetch("/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+        data: { full_name: name },
+      }),
+    });
+    const data = await authResponse.json().catch(() => ({}));
 
-    if (existing) {
+    if (!authResponse.ok) {
+      const message = typeof data?.msg === "string" ? data.msg : "";
+      const lowerMessage = message.toLowerCase();
+      const duplicate =
+        lowerMessage.includes("already") || lowerMessage.includes("registered");
+
       return NextResponse.json(
-        { error: "An account with this email already exists." },
-        { status: 409 },
+        {
+          error: duplicate
+            ? "An account with this email already exists."
+            : message || "Unable to create your account. Please try again.",
+        },
+        { status: duplicate ? 409 : authResponse.status },
       );
     }
 
-    const { passwordHash, passwordSalt } = await hashPassword(password);
-    const payload = encryptStoredUser({
-      name,
-      email,
-      passwordHash,
-      passwordSalt,
-    });
+    const user = data.user || data;
+    const requiresEmailConfirmation = !data.access_token || !data.refresh_token;
+    const response = NextResponse.json(
+      {
+        user: user?.id ? publicUser(user) : { id: "", name, email },
+        requiresEmailConfirmation,
+      },
+      { status: 201 },
+    );
 
-    try {
-      await client.create<CustomerAuthDocument>({
-        _id: id,
-        _type: "customerAuth",
-        payload,
-        createdAt: new Date().toISOString(),
-      });
-    } catch (error) {
-      if (isConflictError(error)) {
-        return NextResponse.json(
-          { error: "An account with this email already exists." },
-          { status: 409 },
-        );
-      }
-      throw error;
-    }
-
-    const user = { id, name, email };
-    const response = NextResponse.json({ user }, { status: 201 });
-    response.cookies.set(SESSION_COOKIE, createSessionToken(user), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: SESSION_TTL_SECONDS,
-    });
-
+    if (!requiresEmailConfirmation) setSessionCookies(response, data);
+    response.headers.set("Cache-Control", "private, no-store");
     return response;
   } catch (error) {
     console.error("Signup failed", error);

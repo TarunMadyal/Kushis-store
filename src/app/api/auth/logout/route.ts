@@ -1,17 +1,24 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE } from "@/lib/auth";
+import {
+  clearSessionCookies,
+  getAccessTokenFromCookies,
+  supabaseAuthFetch,
+} from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
-  response.cookies.set(SESSION_COOKIE, "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
-
-  return response;
+  try {
+    const accessToken = await getAccessTokenFromCookies();
+    if (accessToken) {
+      await supabaseAuthFetch("/logout", { method: "POST" }, accessToken).catch(
+        () => null,
+      );
+    }
+  } finally {
+    const response = NextResponse.json({ success: true });
+    clearSessionCookies(response);
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
 }

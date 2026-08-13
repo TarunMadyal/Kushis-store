@@ -1,83 +1,95 @@
-import { client } from "./sanity/client";
-import { urlForImage } from "./sanity/image";
-import { sanityConfigured } from "./sanity/env";
 import { sampleProducts } from "./sampleProducts";
+import { isSupabaseConfigured, supabaseDataFetch } from "./supabase";
 import type { Category, Product } from "./types";
 
-// Single source of truth for reading products. It pulls from Sanity when the
-// CMS is configured, and otherwise returns the built-in sample catalogue so
-// the storefront always has something to show.
+type SupabaseProduct = {
+  id: string;
+  title: string;
+  slug: string;
+  category: Category;
+  price: number | string;
+  compare_at_price?: number | string | null;
+  description: string;
+  details?: string[] | null;
+  fabric?: string | null;
+  color?: string | null;
+  sizes?: string[] | null;
+  images?: string[] | null;
+  in_stock: boolean;
+  featured?: boolean | null;
+};
 
-const PRODUCT_QUERY = `*[_type == "product"] | order(_createdAt desc){
-  "_id": _id,
-  title,
-  "slug": slug.current,
-  category,
-  price,
-  compareAtPrice,
-  description,
-  details,
-  fabric,
-  color,
-  sizes,
-  "images": images[]{...},
-  inStock,
-  featured
-}`;
-
-type SanityProduct = Omit<Product, "images"> & { images?: unknown[] };
-
-function mapSanityProduct(p: SanityProduct): Product {
+function mapProduct(row: SupabaseProduct): Product {
   return {
-    ...p,
-    images: (p.images || [])
-      .map((img) => urlForImage(img as never))
-      .filter(Boolean),
+    _id: row.id,
+    title: row.title,
+    slug: row.slug,
+    category: row.category,
+    price: Number(row.price),
+    compareAtPrice:
+      row.compare_at_price == null ? undefined : Number(row.compare_at_price),
+    description: row.description,
+    details: row.details || undefined,
+    fabric: row.fabric || undefined,
+    color: row.color || undefined,
+    sizes: row.sizes || undefined,
+    images: row.images || [],
+    inStock: row.in_stock,
+    featured: Boolean(row.featured),
   };
 }
 
-// Simple in-request cache to avoid refetching within a single render pass.
+// Supabase is now the primary product catalogue. The built-in catalogue remains
+// as a safe preview fallback if Supabase is not configured or temporarily down.
 export async function getAllProducts(): Promise<Product[]> {
-  if (sanityConfigured && client) {
+  if (isSupabaseConfigured()) {
     try {
-      const data = (await client.fetch(PRODUCT_QUERY, {}, {
-        next: { revalidate: 30 },
-      })) as SanityProduct[];
-      if (data && data.length > 0) return data.map(mapSanityProduct);
-    } catch (err) {
-      console.error("Sanity fetch failed, falling back to samples:", err);
+      const response = await supabaseDataFetch(
+        "/products?select=id,title,slug,category,price,compare_at_price,description,details,fabric,color,sizes,images,in_stock,featured&order=created_at.desc",
+      );
+      const rows = (await response.json().catch(() => [])) as SupabaseProduct[];
+      if (response.ok && Array.isArray(rows) && rows.length > 0) {
+        return rows.map(mapProduct);
+      }
+      if (!response.ok) console.error("Supabase product fetch failed", rows);
+    } catch (error) {
+      console.error("Supabase product fetch failed, using samples:", error);
     }
   }
+
   return sampleProducts;
 }
 
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   const all = await getAllProducts();
-  const featured = all.filter((p) => p.featured);
+  const featured = all.filter((product) => product.featured);
   return (featured.length ? featured : all).slice(0, limit);
 }
 
 export async function getProductsByCategory(
-  category?: Category
+  category?: Category,
 ): Promise<Product[]> {
   const all = await getAllProducts();
   if (!category) return all;
-  return all.filter((p) => p.category === category);
+  return all.filter((product) => product.category === category);
 }
 
 export async function getProductBySlug(
-  slug: string
+  slug: string,
 ): Promise<Product | undefined> {
   const all = await getAllProducts();
-  return all.find((p) => p.slug === slug);
+  return all.find((product) => product.slug === slug);
 }
 
 export async function getRelatedProducts(
   product: Product,
-  limit = 4
+  limit = 4,
 ): Promise<Product[]> {
   const all = await getAllProducts();
   return all
-    .filter((p) => p.slug !== product.slug && p.category === product.category)
+    .filter(
+      (candidate) =>
+        candidate.slug !== product.slug && candidate.category === product.category,
+    )
     .slice(0, limit);
 }
